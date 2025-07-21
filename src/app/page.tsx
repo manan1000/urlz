@@ -1,5 +1,10 @@
 import { UrlShortenerForm } from "@/components/urls/UrlShortenerForm";
 
+export const metadata = {
+  title: "URLZ - URL Shortener",
+  description: "Paste your long URL and get a shortened one. Free and easy!",
+};
+
 export default function Home(){
   return (
     <div className="flex flex-1 flex-col justify-center items-center p-6 md:p-24">
