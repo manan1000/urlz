@@ -9,9 +9,9 @@ export function cn(...inputs: ClassValue[]) {
 export function isValidUrl(url:string):boolean {
   try {
     const urlObj = new URL(url.trim())
-    return urlObj.protocol === "http:" || urlObj.protocol === "https:"
+    return urlObj.protocol === "http:" || urlObj.protocol === "https:";
   } catch (error) {
-    return false
+    return false;
   }
 }
 

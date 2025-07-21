@@ -2,9 +2,9 @@ import { ApiResponse } from "@/lib/types";
 import { ensureHttps } from "@/lib/utils";
 import { z } from "zod";
 import { customAlphabet } from 'nanoid';
-import { PrismaClient } from "@/generated/prisma";
+import {prisma} from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
-const prisma=new PrismaClient();
 
 const shortenUrlSchema = z.object({
     url: z.url(),
@@ -57,6 +57,8 @@ export async function shortenUrl(formData: FormData): Promise<
                 shortCode: shortCode
             }
         });
+        
+        revalidatePath("/");
 
         return {
             success: true,
