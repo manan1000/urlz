@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const urlSchema = z.object({
-    url: z.url("Please enter a valid URL")
+    url: z.string().url() //FIXME need to preprocess so that if example.com is entered gets coverted to https://example.com currently it gives invalid url
 });
 
 export type UrlFormData = z.infer<typeof urlSchema>;

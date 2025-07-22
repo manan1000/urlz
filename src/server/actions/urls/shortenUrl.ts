@@ -1,3 +1,5 @@
+"use server";
+
 import { ApiResponse } from "@/lib/types";
 import { ensureHttps } from "@/lib/utils";
 import { z } from "zod";
@@ -23,11 +25,13 @@ export async function shortenUrl(formData: FormData): Promise<
     }>
 > {
 
+    console.log("Here 3"); // FIXME
+
     try {
         const url = formData.get('url') as string;
 
         const validatedFields = shortenUrlSchema.safeParse({ url });
-
+        
         if(!validatedFields.success){
             return {
                 success: false,
