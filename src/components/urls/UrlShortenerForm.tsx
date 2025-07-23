@@ -19,6 +19,7 @@ import { useState } from "react";
 import { shortenUrl } from "@/server/actions/urls/shortenUrl";
 import { Card, CardContent } from "@/components//ui/card";
 import { Copy } from "lucide-react";
+import { toast } from "sonner"
 
 
 export function UrlShortenerForm() {
@@ -27,7 +28,7 @@ export function UrlShortenerForm() {
     const pathname = usePathname();
 
     const [shortUrl, setShortUrl] = useState<string | null>(null);
-    const [shortCode, setShortCode] = useState<string | null>(null);
+    const [shortCode, setShortCode] = useState<string | null>(null); // TODO combine const [result, setResult] = useState<{ shortUrl: string; shortCode: string } | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +40,6 @@ export function UrlShortenerForm() {
     });
 
     const onSubmit = async (data: UrlFormData) => {
-        console.log("Here 1"); // FIXME
 
         setIsLoading(true);
         setError(null);
@@ -53,15 +53,17 @@ export function UrlShortenerForm() {
             const response = await shortenUrl(formData);
             if (response.success && response.data) {
                 setShortUrl(response.data.shortUrl);
+                
 
                 //extract shorCode from the url
-                const shortCodeMatch = response.data.shortUrl.match(/\/r\/([^/]+)$/);
+                const shortCodeMatch = response.data.shortUrl.match(/\/([^/]+)$/);
                 if (shortCodeMatch && shortCodeMatch[1]) {
                     setShortCode(shortCodeMatch[1]);
+                } else {
+                    setError(response.error ?? "Something went wrong");
                 }
             }
 
-            console.log("Here 2");  // FIXME
         } catch (error) {
             setError("An error occured.Please try again later")
             console.error(error);
@@ -74,9 +76,11 @@ export function UrlShortenerForm() {
         if (!shortUrl) return;
 
         try {
-            await navigator.clipboard.writeText(shortUrl); //TODO add a toast that url is copied
+            await navigator.clipboard.writeText(shortUrl);
+            toast.success('URL copied to clipboard');
         } catch (error) {
             console.error(error);
+            toast.error('Failed to copy!');
         }
     };
 
@@ -115,7 +119,8 @@ export function UrlShortenerForm() {
                         </div>
                     )}
 
-                    {shortUrl && (
+                    {shortUrl && (  // TODO Consider moving the result display into its own component like <ShortenedUrlCard url={shortUrl} />
+
                         <Card>
                             <CardContent className="p-4">
                                 <p className="text-sm font-medium text-muted-foreground mb-2">
